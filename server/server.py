@@ -34,7 +34,7 @@ def get_clients(clients: Clients,\
 
 def main():
     server = create_server(IP, PORT)
-    while True: # Change from True
+    while True: #TODO Change from True
         send_clients = get_clients(clients, Permissions.send)
         read_clients = get_clients(clients, Permissions.read)
         write_clients = get_clients(clients, Permissions.write) 

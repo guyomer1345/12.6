@@ -1,11 +1,13 @@
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from queue import Queue
 
 
 @dataclass
 class Screen:
     screen: str = ""
     prompt: str = ""
+    messages_queue : Queue[str] = field(default_factory=Queue)
 
 
     def clear_screen(self):
