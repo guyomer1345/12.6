@@ -1,0 +1,116 @@
+import logging
+import socket
+from queue import Queue
+from datetime import datetime
+from typing import Dict, List
+from dataclasses import dataclass, field
+from consts.consts import Permissions, Commands, HOURS, MINUTES
+from errors.errors import SocketNotExist
+
+
+@dataclass
+class Request:
+    """
+    Docstring
+    """
+    nickname: str
+    cmd: Commands
+    args: Dict[str, bytes]
+
+
+@dataclass
+class Client:
+    """
+    Docstring
+    """
+    sock: socket.socket
+    _nickname: str = ''
+    permissions: List[Permissions] = field(default_factory=list)
+    message_queue: Queue[bytes] = field(default_factory=Queue)
+    
+    @property
+    def nickname(self) -> str:
+        return self._nickname
+    
+    @nickname.setter
+    def nickname(self, nickname: str) -> None:
+        self._nickname = nickname
+    
+    
+    def remove_permissions(self, permissions: List[Permissions]) -> None:
+        """
+        Docstring
+        """
+        [self.permissions.remove(permission) for permission in permissions]
+
+
+    def add_permissions(self, permissions: List[Permissions]) -> None:
+        """
+        Docstring
+        """
+        [self.permissions.append(permission) for permission in permissions]
+        
+
+
+@dataclass
+class Clients:
+    """
+    Docstring
+    """
+    clients: List[Client] = field(default_factory=list)
+
+
+    def get_by_nickname(self, nickname: str):
+        """
+        Docstring
+        """
+        sock = [client for client in \
+            self.clients if client.nickname == nickname][0] #TODO handle no nickname
+    
+        return sock
+
+
+    def get_by_sock(self, sock: socket.socket) -> Client:
+        """
+        Docstring
+        """
+        try:
+            client = [client for client in \
+                 self.clients if client.sock == sock][0]
+            
+            return client
+        
+        except Exception as e:
+            raise SocketNotExist(f"Socket doesn't exist {e}")
+        
+
+    def remove_client(self, sock: socket.socket) -> None:
+        """
+        Docstring
+        """
+        try:
+            client_to_remove = [client for client in \
+                 self.clients if client.sock == sock][0]
+            self.clients.remove(client_to_remove)
+        
+        except:
+            raise SocketNotExist("Socket doesn't exist")
+
+
+@dataclass
+class Message:
+    sender: str
+    prefix: str
+    data: bytes
+    date: str = str(datetime.now())[HOURS:MINUTES]
+
+    def build(self) -> bytes:
+        """
+        Docstring
+        """
+        message = (self.date + ' ').encode() +\
+                 (self.prefix+self.sender+': ').encode() + \
+                     self.data
+        message = str(len(message)).zfill(9).encode() + message
+
+        return message

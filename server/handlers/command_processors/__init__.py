@@ -1,0 +1,6 @@
+from .set_nickname_processor import process_set_nickname
+from .message_processor import process_message
+from .kick_processor import process_kick
+from .mute_processor import process_mute
+from .promote_processor import process_promote
+from .private_message_processor import process_private_message
