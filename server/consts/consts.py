@@ -2,20 +2,20 @@ import enum
 from configparser import ConfigParser
 
 
-class Permissions(enum.Enum): #TODO Change to caps AND swap read\write
-    send: int = 0 #TODO Find better name
-    read: int = 1 
-    write: int = 2
-    manager: int = 3
+class Permissions(enum.Enum):
+    BASIC = 0
+    WRITE = 1 
+    READ = 2
+    MANAGER = 3
 
 
 class Commands(enum.Enum):
-    set_nickname:int = 0
-    message:int = 1
-    promote:int = 2
-    kick:int = 3
-    mute:int = 4
-    private_message:int = 5
+    SET_NICKNAME = 0
+    MESSAGE = 1
+    PROMOTE = 2
+    KICK = 3
+    MUTE = 4
+    PRIVATE_MESSAGE = 5
 
 
 config = ConfigParser()

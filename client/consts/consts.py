@@ -4,7 +4,7 @@ HELP = \
 """
 Do note that before sending messages you have to set up a nickname.
 The following commands me be available to you:
-/help, /set-nickname, /mute, /promote, /kick, /private-message.
+/help, /set-nickname, /mute, /promote, /kick, /private-message, /quit, /view-managers.
 If no command is specified a normal message will be sent\n
 """.strip()
 

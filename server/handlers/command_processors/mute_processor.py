@@ -1,5 +1,5 @@
 from consts.consts import Permissions
-from data_classes import Client, Clients ,Request
+from data_classes import Client, Clients, Request, Message
 from errors.errors import BadPermissions, CantMuteYourself
 
 
@@ -8,7 +8,7 @@ def process_mute(current_client: Client, \
     """
     Docstring
     """
-    if not Permissions.manager in current_client.permissions:
+    if not Permissions.MANAGER in current_client.permissions:
         raise BadPermissions
 
     client_nickname = request.args['nickname']
@@ -18,11 +18,8 @@ def process_mute(current_client: Client, \
         raise CantMuteYourself(f'{request.nickname} tried to mute himself')
     
     permissions = client.permissions
-    if Permissions.read not in permissions and Permissions.write in permissions:
-        client.add_permissions([Permissions.read])
+    if Permissions.WRITE not in permissions and Permissions.READ in permissions:
+        client.add_permissions([Permissions.WRITE])
         return None
 
-    client.remove_permissions([Permissions.read])
-
-    #TODO SEND MUTED MESSAGE TO CLIENTs
-    
+    client.remove_permissions([Permissions.WRITE])

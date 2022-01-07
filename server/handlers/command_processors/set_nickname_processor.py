@@ -1,4 +1,4 @@
-from data_classes import Client, Clients, Request
+from data_classes import Client, Clients, Request, Message
 from errors.errors import NicknameNotAllowed, NicknameUsed, HasNickname
 from consts.consts import Permissions
 
@@ -27,7 +27,7 @@ def is_valid_nickname(nickname: str) -> bool:
     """
     Docstring
     """
-    return nickname.isalnum()
+    return nickname.isalnum() and nickname.upper() != 'SERVER'
 
 
 def process_set_nickname(current_client: Client, \
@@ -36,21 +36,21 @@ def process_set_nickname(current_client: Client, \
     Docstring
     """
     if has_nickname(current_client):
-        raise HasNickname('Client already has nickname') # TODO disconnects
+        raise HasNickname('Client already has nickname')
     
     nickname = request.nickname
     if not is_valid_nickname(nickname):
-        raise NicknameNotAllowed('Client tried to use an invalid nickname') # TODO disconnect
+        raise NicknameNotAllowed('Client tried to use an invalid nickname')
     
     if nickname_used(nickname, clients):
-        raise NicknameUsed('Client tried to use an existing nickname') # TODO disconnect
+        raise NicknameUsed('Client tried to use an existing nickname')
     
     current_client.nickname = nickname
-    current_client.remove_permissions([Permissions.send])
-    if nickname == 'amit':  
-        current_client.add_permissions([Permissions.manager])
+    current_client.remove_permissions([Permissions.BASIC])
+    current_client.add_permissions([Permissions.WRITE, Permissions.READ])
+    if not clients.clients:  
+        current_client.add_permissions([Permissions.MANAGER])
 
-    current_client.add_permissions([Permissions.read, Permissions.write])
-    #TODO add x joined the chat, handle quit, view-managers
-    
-    
+    message = Message('SERVER', '',\
+             f'{current_client.nickname} has joined the chat!'.encode())
+    clients.add_message_to_queue(clients.clients, message)

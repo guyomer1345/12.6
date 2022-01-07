@@ -3,7 +3,7 @@ import logging
 from typing import List
 from data_classes import Clients
 from functions.functions import accept_client, end_connection
-from errors.errors import ProtocolError, SocketNotExist
+from errors.errors import ClientDisconnected, ProtocolError
 from handlers.dispatcher import dispatcher
 from parsers.request_parser import request_parser
 
@@ -23,9 +23,6 @@ def process_readable(rlist: List[socket.socket], \
             request = request_parser(sock) 
             dispatcher(request, current_client, clients)
 
-    except (socket.error, socket.timeout, ProtocolError) as e:
+    except (socket.error, socket.timeout, ProtocolError, ClientDisconnected) as e:
         logging.info(e)
         end_connection(current_client, clients, True)
-
-    except (SocketNotExist) as e:
-        logging.info(e)

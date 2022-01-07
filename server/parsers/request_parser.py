@@ -3,9 +3,8 @@ import socket
 from typing import Dict
 from collections import ChainMap
 from data_classes import Request
-from errors.errors import ProtocolError
+from errors.errors import ProtocolError, ClientDisconnected
 from consts.consts import Commands, NAME_LEN, CMD_LEN, DATA_LEN
-from server.errors.errors import ClientDisconnected
 
 
 def recv(sock: socket.socket, msg_len: int) -> bytes:
@@ -82,7 +81,7 @@ def request_parser(client: socket.socket) -> Request:
 
 reader_dict = {
     read_name: 
-    [Commands.promote, Commands.kick, Commands.mute, Commands.private_message],
+    [Commands.PROMOTE, Commands.KICK, Commands.MUTE, Commands.PRIVATE_MESSAGE],
     read_data: 
-    [Commands.message, Commands.private_message]
+    [Commands.MESSAGE, Commands.PRIVATE_MESSAGE]
     }

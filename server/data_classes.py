@@ -1,12 +1,10 @@
-from enum import IntEnum
-import logging
 import socket
 from queue import Queue
 from datetime import datetime
 from typing import Dict, List
+from errors.errors import SocketNotExist
 from dataclasses import dataclass, field
 from consts.consts import Permissions, Commands, HOURS, MINUTES
-from errors.errors import SocketNotExist
 
 
 @dataclass
@@ -19,6 +17,25 @@ class Request:
     args: Dict[str, bytes]
 
 
+@dataclass
+class Message:
+    sender: str
+    prefix: str
+    data: bytes
+    date: str = str(datetime.now())[HOURS:MINUTES]
+
+    def build(self) -> bytes:
+        """
+        Docstring
+        """
+        message = (self.date + ' ').encode() +\
+                 (self.prefix+self.sender+': ').encode() + \
+                     self.data
+        message = str(len(message)).zfill(9).encode() + message
+
+        return message
+
+        
 @dataclass
 class Client:
     """
@@ -50,7 +67,6 @@ class Client:
         Docstring
         """
         [self.permissions.append(permission) for permission in permissions]
-        
 
 
 @dataclass
@@ -73,6 +89,18 @@ class Clients:
         
         except IndexError:
             raise SocketNotExist("Socket doesn't exist")
+
+    
+    def view_managers(self) -> str:
+        """
+        Docstring
+        """
+        managers = [client.nickname for client in \
+                 self.clients if Permissions.MANAGER in client.permissions]
+        managers = ' '.join(managers)
+
+        return managers
+
 
     def get_by_sock(self, sock: socket.socket) -> Client:
         """
@@ -101,20 +129,10 @@ class Clients:
             raise SocketNotExist("Socket doesn't exist")
 
 
-@dataclass
-class Message:
-    sender: str
-    prefix: str
-    data: bytes
-    date: str = str(datetime.now())[HOURS:MINUTES]
-
-    def build(self) -> bytes:
+    def add_message_to_queue(self, clients: List[Client], message: Message) -> None:
         """
         Docstring
         """
-        message = (self.date + ' ').encode() +\
-                 (self.prefix+self.sender+': ').encode() + \
-                     self.data
-        message = str(len(message)).zfill(9).encode() + message
-
-        return message
+        for client in clients:
+            if Permissions.WRITE in client.permissions: 
+                client.message_queue.put(message)

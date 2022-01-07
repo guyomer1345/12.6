@@ -4,6 +4,7 @@ import sys
 import select
 import queue
 import threading
+from typing_extensions import runtime
 from data_classes import Screen, Client
 from consts.consts import HELP
 from processors import readable_proccessor, writeable_processor
@@ -48,7 +49,7 @@ def printing_function(screen: Screen) -> None:
     """
     Docstring
     """
-    #screen.messages_queue.put(HELP)
+    screen.messages_queue.put(HELP)
     while True:
         try:
             message = screen.messages_queue.get(False)
@@ -74,14 +75,20 @@ def main():
         thread.daemon = True
         thread.start()
 
-    while True: #TODO change from true
-        rlist, wlist, xlist = select.select([client.sock], \
-                                            [client.sock], [])
-        if client.sock in rlist:
-            readable_proccessor.process_readable(client, screen)
-        
-        if client.sock in wlist:
-            writeable_processor.process_writeable(client, screen)
+    try:
+        running = True
+        while running:
+            rlist, wlist, xlist = select.select([client.sock], \
+                                                [client.sock], [])
+            if client.sock in rlist:
+                readable_proccessor.process_readable(client, screen)
+            
+            if client.sock in wlist:
+                writeable_processor.process_writeable(client, screen)
+
+    except KeyboardInterrupt:
+        logging.info('Shutting down')
+        sys.exit()
 
 
 if __name__ == '__main__':

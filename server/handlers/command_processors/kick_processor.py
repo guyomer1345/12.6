@@ -1,9 +1,7 @@
-import logging
-from socket import socket
 from consts.consts import Permissions
 from data_classes import Client, Clients, Message ,Request
-from errors.errors import BadPermissions, CantKickYourself, SocketNotExist
-from functions.functions import add_message_to_queue, end_connection
+from errors.errors import BadPermissions, CantKickYourself
+from functions.functions import end_connection
 
 
 def process_kick(current_client: Client, \
@@ -11,7 +9,7 @@ def process_kick(current_client: Client, \
     """
     Docstring
     """
-    if Permissions.manager not in current_client.permissions:
+    if Permissions.MANAGER not in current_client.permissions:
         raise BadPermissions
 
     client_nickname = request.args['nickname']
@@ -23,4 +21,4 @@ def process_kick(current_client: Client, \
     message = Message('server', '', \
                 f'{client.nickname} was kicked from the chat !'.encode())
     end_connection(client, clients, False)
-    add_message_to_queue(clients.clients, message)
+    clients.add_message_to_queue(clients.clients, message)

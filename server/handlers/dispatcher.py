@@ -1,31 +1,48 @@
 import logging
 from consts.consts import Commands
-from data_classes import Client, Clients, Request
-from errors.errors import BadPermissions
+from data_classes import Client, Clients, Request, Message
+from errors.errors import BadNickname, BadPermissions,\
+                         CantKickYourself, CantMuteYourself
+from functions.functions import end_connection
 import handlers.command_processors as command_processors
+
 
 def dispatcher(request: Request, current_client: Client, \
      clients: Clients) -> None:
     """
     Docstring
     """
+    message = ''
     try:
         logging.info(f'Client: {current_client}'+ \
              f'is trying to do action {request.cmd}')
         commands_dict[request.cmd](current_client, clients, request)
 
-    except BadPermissions:
-        pass #TODO Send bad permissions to client
+    except BadPermissions as e:
+        message = Message('SERVER', '',\
+            "You don't have permissions for that!".encode())
+        logging.info(e)
 
-    except Exception as e: #TODO go over all the exceptions and handle them accordingly
-        logging.debug(f'Exception in dispatcher {e}')
+    except BadNickname as e:
+        logging.info(e)
+        end_connection(current_client, clients, True)
+    
+    except (CantMuteYourself, CantKickYourself) as e:
+        logging.info(e)
+        message = Message('SERVER', '',\
+            "You cant use that on yourself!".encode())
+    
+    finally:
+        if message:
+            clients.add_message_to_queue([current_client], message)
+
 
 
 commands_dict = {
-    Commands.set_nickname: command_processors.process_set_nickname,
-    Commands.message: command_processors.process_message,
-    Commands.mute: command_processors.process_mute,
-    Commands.kick: command_processors.process_kick,
-    Commands.promote: command_processors.process_promote,
-    Commands.private_message: command_processors.process_private_message
+    Commands.SET_NICKNAME: command_processors.process_set_nickname,
+    Commands.MESSAGE: command_processors.process_message,
+    Commands.MUTE: command_processors.process_mute,
+    Commands.KICK: command_processors.process_kick,
+    Commands.PROMOTE: command_processors.process_promote,
+    Commands.PRIVATE_MESSAGE: command_processors.process_private_message
 }

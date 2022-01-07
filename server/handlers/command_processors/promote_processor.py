@@ -8,7 +8,7 @@ def process_promote(current_client: Client, \
     """
     Docstring
     """
-    if not Permissions.manager in current_client.permissions:
+    if not Permissions.MANAGER in current_client.permissions:
         raise BadPermissions
 
     client_nickname = request.args['nickname']
@@ -18,8 +18,8 @@ def process_promote(current_client: Client, \
         raise CantPromoteYourself(f'{request.nickname} tried to promote himself')
     
     permissions = client.permissions
-    if Permissions.manager not in permissions:
-        client.add_permissions([Permissions.manager])
+    if Permissions.MANAGER not in permissions:
+        client.add_permissions([Permissions.MANAGER])
         return None
 
-    client.remove_permissions([Permissions.manager])
+    client.remove_permissions([Permissions.MANAGER])

@@ -2,7 +2,6 @@ import socket
 import select
 import logging
 from typing import List
-from typing_extensions import runtime
 from data_classes import Clients
 import handlers.client_processors as client_processors
 from consts.consts import IP, PORT, MAX_LISTEN, Permissions
@@ -37,9 +36,9 @@ def main():
     running = True
     try:
         while running:
-            send_clients = get_clients(clients, Permissions.send)
-            read_clients = get_clients(clients, Permissions.read)
-            write_clients = get_clients(clients, Permissions.write) 
+            send_clients = get_clients(clients, Permissions.BASIC)
+            read_clients = get_clients(clients, Permissions.WRITE)
+            write_clients = get_clients(clients, Permissions.READ) 
             wlist = list(set(send_clients+read_clients+write_clients)) + [server]
             rlist = list(set(write_clients+read_clients))
             rlist, wlist, xlist = select.select(wlist, rlist, [])

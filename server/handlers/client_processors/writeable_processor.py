@@ -16,5 +16,3 @@ def writeable_processor(clients: Clients) -> None:
 
         except queue.Empty:
             pass
-        except Exception as e:
-            logging.debug(f'QUEUE DEAD {e}') #TODO change
