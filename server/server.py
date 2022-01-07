@@ -2,9 +2,9 @@ import socket
 import select
 import logging
 from typing import List
+from typing_extensions import runtime
 from data_classes import Clients
-from handlers.client_processors.readable_processor import process_readable #TODO init in client_processors
-from handlers.client_processors.writeable_processor import writeable_processor
+import handlers.client_processors as client_processors
 from consts.consts import IP, PORT, MAX_LISTEN, Permissions
 
 logging.basicConfig(level=logging.DEBUG)
@@ -34,16 +34,22 @@ def get_clients(clients: Clients,\
 
 def main():
     server = create_server(IP, PORT)
-    while True: #TODO Change from True, empty names leaving server to no name
-        send_clients = get_clients(clients, Permissions.send)
-        read_clients = get_clients(clients, Permissions.read)
-        write_clients = get_clients(clients, Permissions.write) 
-        wlist = list(set(send_clients+read_clients+write_clients)) + [server]
-        rlist = list(set(write_clients+read_clients))
-        rlist, wlist, xlist = select.select(wlist, rlist, [])
+    running = True
+    try:
+        while running:
+            send_clients = get_clients(clients, Permissions.send)
+            read_clients = get_clients(clients, Permissions.read)
+            write_clients = get_clients(clients, Permissions.write) 
+            wlist = list(set(send_clients+read_clients+write_clients)) + [server]
+            rlist = list(set(write_clients+read_clients))
+            rlist, wlist, xlist = select.select(wlist, rlist, [])
 
-        process_readable(rlist, server, clients)
-        writeable_processor(clients)
+            client_processors.process_readable(rlist, server, clients)
+            client_processors.writeable_processor(clients)
+
+    except KeyboardInterrupt:
+        running = False
+        logging.info('Server shutting down!')
 
     
 if __name__ == '__main__':

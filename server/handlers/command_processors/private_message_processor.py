@@ -10,13 +10,13 @@ def process_private_message(current_client: Client, \
     """
     Docstring
     """
-    if not Permissions.read in current_client.permissions: # Handle bad_premissions as add cant send to queue
+    if not Permissions.read in current_client.permissions: #TODO Handle bad_premissions as add cant send to queue
         raise BadPermissions(f'Client {current_client.nickname} ' + \
             'tried to write with bad permissions')
     
     logging.debug(f'REQUEST IS {request}')
-    data = request.args[1]['data']  #TODO change to a normal dict instead of whatever this is
-    client_nickname = request.args[0]['nickname']
+    data = request.args['data']  
+    client_nickname = request.args['nickname']
     client = clients.get_by_nickname(client_nickname)
     
     prefix = get_prefix(current_client, request)
