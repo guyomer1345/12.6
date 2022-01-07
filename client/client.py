@@ -4,7 +4,6 @@ import sys
 import select
 import queue
 import threading
-from typing_extensions import runtime
 from data_classes import Screen, Client
 from consts.consts import HELP
 from processors import readable_proccessor, writeable_processor
