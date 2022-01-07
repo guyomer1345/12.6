@@ -1,6 +1,6 @@
 from consts.consts import Permissions
 from data_classes import Client, Clients ,Request
-from errors.errors import BadPermissions, CantMuteYourself
+from errors.errors import BadPermissions, CantPromoteYourself
 
 
 def process_promote(current_client: Client, \
@@ -15,7 +15,7 @@ def process_promote(current_client: Client, \
     client = clients.get_by_nickname(client_nickname)
 
     if current_client == client:
-        raise CantMuteYourself(f'{request.nickname} tried to promote himself')
+        raise CantPromoteYourself(f'{request.nickname} tried to promote himself')
     
     permissions = client.permissions
     if Permissions.manager not in permissions:

@@ -4,8 +4,9 @@ import sys
 import select
 import queue
 import threading
-from data_classes import Screen
+from data_classes import Screen, Client
 from consts.consts import HELP
+from processors import readable_proccessor, writeable_processor
 
 screen = Screen()
 
@@ -31,11 +32,23 @@ def connect_to_server(client_socket: socket.socket, ip: str, port: str) -> None:
         sys.exit()
 
 
-def find_name(screen: Screen):  #TODO find name...
+def input_function(screen: Screen) -> None:
     """
     Docstring
     """
-    screen.messages_queue.put(help)
+    while True:
+        client_message = screen.prompt_to_screen()
+        if client_message.startswith('/None'):
+            client_message.replace('/None', '')
+
+        screen.client_messages_queue.put(client_message)
+
+
+def printing_function(screen: Screen) -> None:
+    """
+    Docstring
+    """
+    #screen.messages_queue.put(HELP)
     while True:
         try:
             message = screen.messages_queue.get(False)
@@ -43,7 +56,6 @@ def find_name(screen: Screen):  #TODO find name...
 
         except queue.Empty:
             pass
-
 
 
 def main():
@@ -54,24 +66,23 @@ def main():
     ip, port = sys.argv[1:3]
 
     client_socket = create_client_socket()
-    connect_to_server(client_socket, ip ,port)
+    client = Client(client_socket)
+    connect_to_server(client.sock, ip ,port)
 
-    printing_thread = threading.Thread(target = find_name, args=(screen, ))
-    printing_thread.daemon = True
-    printing_thread.start()
+    for func in [printing_function, input_function]:
+        thread = threading.Thread(target = func, args=(screen, ))
+        thread.daemon = True
+        thread.start()
 
     while True: #TODO change from true
-        rlist, wlist, xlist = select.select([client_socket], \
-                                            [client_socket], [])
-        if client_socket in rlist:
-            pass
+        rlist, wlist, xlist = select.select([client.sock], \
+                                            [client.sock], [])
+        if client.sock in rlist:
+            readable_proccessor.process_readable(client, screen)
         
-        if client_socket in wlist:
-            pass
+        if client.sock in wlist:
+            writeable_processor.process_writeable(client, screen)
 
 
 if __name__ == '__main__':
     main()
-
-#TODO : change client to data_class (add name to it)
-#TODO think about how to create enum class (so both numbers and words will be supportedf)

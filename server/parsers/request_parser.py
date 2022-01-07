@@ -64,7 +64,7 @@ def request_parser(client: socket.socket) -> Request:
     try:
         cmd = Commands(read_cmd(client))
         args = [reader(client) for reader,cmds in \
-            reader_dict.items() if cmd in cmds] # dataclass with builder? # if yes fix args[0]
+            reader_dict.items() if cmd in cmds] #TODO dataclass with builder? # if yes fix args[0]
 
         request = Request(name, cmd, args)
         logging.info(f'Requst is {request}')
