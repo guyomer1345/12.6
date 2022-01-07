@@ -1,3 +1,4 @@
+from enum import IntEnum
 import logging
 import socket
 from queue import Queue
@@ -64,11 +65,14 @@ class Clients:
         """
         Docstring
         """
-        sock = [client for client in \
-            self.clients if client.nickname == nickname][0] #TODO handle no nickname
-    
-        return sock
-
+        try:
+            sock = [client for client in \
+                self.clients if client.nickname == nickname][0]
+        
+            return sock
+        
+        except IndexError:
+            raise SocketNotExist("Socket doesn't exist")
 
     def get_by_sock(self, sock: socket.socket) -> Client:
         """
@@ -80,8 +84,8 @@ class Clients:
             
             return client
         
-        except Exception as e:
-            raise SocketNotExist(f"Socket doesn't exist {e}")
+        except IndexError:
+            raise SocketNotExist("Socket doesn't exist")
         
 
     def remove_client(self, sock: socket.socket) -> None:

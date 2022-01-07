@@ -3,6 +3,10 @@ class ProtocolError(Exception):
     pass
 
 
+class ClientDisconnected(Exception):
+    '''Raise when a client has disconnected informally'''
+
+
 class SocketNotExist(Exception):
     '''Raise when trying to perform actions on a socket that isn't connected'''
     pass

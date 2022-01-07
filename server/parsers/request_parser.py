@@ -1,9 +1,11 @@
 import logging
 import socket
 from typing import Dict
+from collections import ChainMap
 from data_classes import Request
 from errors.errors import ProtocolError
 from consts.consts import Commands, NAME_LEN, CMD_LEN, DATA_LEN
+from server.errors.errors import ClientDisconnected
 
 
 def recv(sock: socket.socket, msg_len: int) -> bytes:
@@ -12,9 +14,11 @@ def recv(sock: socket.socket, msg_len: int) -> bytes:
     """
     try:
         amount = int(sock.recv(msg_len))
+    except ValueError:
+        raise ClientDisconnected('Client disconnected')
     except:
-        raise ProtocolError('Protcol error, or client disconnected') #TODO change to more specifi (cant convert to int)
-    
+        raise ProtocolError('An error in the protocol occured')
+
     try:
         data = b''
         while(len(data) != amount):
@@ -64,7 +68,8 @@ def request_parser(client: socket.socket) -> Request:
     try:
         cmd = Commands(read_cmd(client))
         args = [reader(client) for reader,cmds in \
-            reader_dict.items() if cmd in cmds] #TODO dataclass with builder? # if yes fix args[0]
+            reader_dict.items() if cmd in cmds]
+        args = dict(ChainMap(*args))
 
         request = Request(name, cmd, args)
         logging.info(f'Requst is {request}')

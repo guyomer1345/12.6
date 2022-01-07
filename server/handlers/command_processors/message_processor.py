@@ -13,7 +13,7 @@ def process_message(current_client: Client, \
         raise BadPermissions(f'Client {current_client.nickname} ' + \
             'tried to write with bad permissions')
     
-    data = request.args[0]['data']
+    data = request.args['data']
     
     prefix = get_prefix(current_client, request)
     message = Message(request.nickname, prefix, data)

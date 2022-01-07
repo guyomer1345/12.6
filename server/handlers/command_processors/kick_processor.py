@@ -14,7 +14,7 @@ def process_kick(current_client: Client, \
     if Permissions.manager not in current_client.permissions:
         raise BadPermissions
 
-    client_nickname = request.args[0]['nickname']
+    client_nickname = request.args['nickname']
     client = clients.get_by_nickname(client_nickname)
 
     if current_client == client:

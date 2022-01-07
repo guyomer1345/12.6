@@ -38,9 +38,12 @@ def end_connection(client: Client, clients: Clients,\
     ip = sock.getsockname()[0]
     clients.remove_client(sock)
     sock.close()
+    if not client.nickname:
+        client.nickname = 'No nickname'
+        
     if alert_clients:
         message = Message('SERVER', '',\
-             f'{client.nickname} left the chat!'.encode())
+             f'{client.nickname} has left the chat!'.encode())
         add_message_to_queue(clients.clients, message)
 
     logging.info(f'Closed the connection with {ip}')

@@ -11,7 +11,7 @@ def process_mute(current_client: Client, \
     if not Permissions.manager in current_client.permissions:
         raise BadPermissions
 
-    client_nickname = request.args[0]['nickname']
+    client_nickname = request.args['nickname']
     client = clients.get_by_nickname(client_nickname)
 
     if current_client == client:
@@ -20,10 +20,9 @@ def process_mute(current_client: Client, \
     permissions = client.permissions
     if Permissions.read not in permissions and Permissions.write in permissions:
         client.add_permissions([Permissions.read])
-        return #TODO return?
+        return None
 
-    if Permissions.read in permissions:
-        client.remove_permissions([Permissions.read])
+    client.remove_permissions([Permissions.read])
 
     #TODO SEND MUTED MESSAGE TO CLIENTs
     
