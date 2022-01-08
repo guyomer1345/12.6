@@ -11,7 +11,13 @@ from parsers.request_parser import request_parser
 def process_readable(rlist: List[socket.socket], \
     server: socket.socket, clients: Clients) -> None:
     """
-    Add docstring
+    This function goes over all the readable sockets 
+    and handles their messages accordingly
+
+    :param rlist: A list of readable sockets
+    :param server: The server the sockets are connected to 
+    :param clients: Clients object
+    :return: None
     """
     try:
         for sock in rlist:

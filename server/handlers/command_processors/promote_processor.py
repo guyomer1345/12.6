@@ -6,7 +6,14 @@ from errors.errors import BadPermissions, CantPromoteYourself
 def process_promote(current_client: Client, \
      clients: Clients, request: Request) -> None:
     """
-    Docstring
+    This functions takes care promote requests
+
+    :rasise BadPermissions: If client doesn't have manager himself
+    :raise CantPromoteYourself: If client tried to promote / demote himself
+    :param current_client: The client trying to promote
+    :param clients: Clients object
+    :request Request: The request the client is trying to make
+    :return: None
     """
     if not Permissions.MANAGER in current_client.permissions:
         raise BadPermissions

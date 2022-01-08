@@ -8,7 +8,11 @@ from errors.errors import BadPermissions
 def process_view_managers(current_client: Client, \
                             clients: Clients) -> Tuple[Message, List[Client]]:
     """
-    Docstring
+    This function creates a message to the client with the current managers
+    
+    :param current_client: The client trying to promote
+    :param clients: Clients object
+    :return: A tuple of the message and which client to send to
     """
     message = Message('SERVER', '' , clients.view_managers().encode())
     clients_to_send = [current_client]
@@ -24,7 +28,13 @@ special_cases = {
 def process_message(current_client: Client, \
      clients: Clients, request: Request) -> None:
     """
-    Docstring
+    This function takes care of message requests
+
+    :rasise BadPermissions: If client doesn't have manager himself
+    :param current_client: The client trying to promote
+    :param clients: Clients object
+    :request Request: The request the client is trying to make
+    :return: None
     """
     if not Permissions.WRITE in current_client.permissions:
         raise BadPermissions(f'Client {current_client.nickname} ' + \

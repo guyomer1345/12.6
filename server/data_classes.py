@@ -114,7 +114,7 @@ class Clients:
         """
         managers = [client.nickname for client in \
                  self.clients if Permissions.MANAGER in client.permissions]
-        managers = ' '.join(managers)
+        managers = ', '.join(managers)
 
         return managers
 

@@ -7,7 +7,14 @@ from functions.functions import end_connection
 def process_kick(current_client: Client, \
      clients: Clients, request: Request) -> None:
     """
-    Docstring
+    This function takes care of kick requests
+
+    :raise CantKickYourself: If client tried to kick himself
+    :rasise BadPermissions: If client doesn't have manager himself
+    :param current_client: The client trying to promote
+    :param clients: Clients object
+    :request Request: The request the client is trying to make
+    :return: None
     """
     if Permissions.MANAGER not in current_client.permissions:
         raise BadPermissions

@@ -2,7 +2,7 @@ import logging
 from consts.consts import Commands
 from data_classes import Client, Clients, Request, Message
 from errors.errors import BadNickname, BadPermissions,\
-                         CantKickYourself, CantMuteYourself
+                         CantKickYourself, CantMuteYourself, CantPromoteYourself
 from functions.functions import end_connection
 import handlers.command_processors as command_processors
 
@@ -25,15 +25,15 @@ def dispatcher(request: Request, current_client: Client, \
         commands_dict[request.cmd](current_client, clients, request)
 
     except BadPermissions as e:
+        logging.info(e)
         message = Message('SERVER', '',\
             "You don't have permissions for that!".encode())
-        logging.info(e)
 
     except BadNickname as e:
         logging.info(e)
         end_connection(current_client, clients, True)
     
-    except (CantMuteYourself, CantKickYourself) as e:
+    except (CantMuteYourself, CantKickYourself, CantPromoteYourself) as e:
         logging.info(e)
         message = Message('SERVER', '',\
             "You cant use that on yourself!".encode())

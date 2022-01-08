@@ -8,7 +8,13 @@ from errors.errors import BadPermissions
 def process_private_message(current_client: Client, \
      clients: Clients, request: Request) -> None:
     """
-    Docstring
+    The function takes care of private message requests
+
+    :rasise BadPermissions: If client doesn't have manager himself
+    :param current_client: The client trying to promote
+    :param clients: Clients object
+    :request Request: The request the client is trying to make
+    :return: None
     """
     if not Permissions.WRITE in current_client.permissions:
         raise BadPermissions(f'Client {current_client.nickname} ' + \
