@@ -7,12 +7,18 @@ from errors.errors import ProtocolError, ClientDisconnected
 from consts.consts import Commands, NAME_LEN, CMD_LEN, DATA_LEN
 
 
-def recv(sock: socket.socket, msg_len: int) -> bytes:
+def recv(sock: socket.socket, length: int) -> bytes:
     """
-    Docstring
+    This function is wrapper function for socket's recv
+
+    :raise ClientDisconnected: If the amount received wasn't an integer
+    :raise  ProtocolError: If the message wasn't sent by the protocol guidelines
+    :param sock: The socket to recv from
+    :param length: How many bytes represent the amount to read
+    :return: The data read in bytes
     """
     try:
-        amount = int(sock.recv(msg_len))
+        amount = int(sock.recv(length))
     except ValueError:
         raise ClientDisconnected('Client disconnected')
     except:
@@ -31,7 +37,10 @@ def recv(sock: socket.socket, msg_len: int) -> bytes:
 
 def read_name(sock: socket.socket) -> Dict[str, bytes]:
     """
-    Docstring
+    This functions is wrapping function for recv used to receive a name
+
+    :param sock: The socket to recv from
+    :return: A dictionary containing the name
     """
     name = recv(sock, NAME_LEN).decode()
 
@@ -40,7 +49,10 @@ def read_name(sock: socket.socket) -> Dict[str, bytes]:
 
 def read_data(sock: socket.socket) -> Dict[str, bytes]:
     """
-    Docstring
+    This functions is wrapping function for recv used to receive data
+
+    :param sock: The socket to recv from
+    :return: A dictionary containing the data
     """
     data = recv(sock, DATA_LEN)
 
@@ -49,24 +61,28 @@ def read_data(sock: socket.socket) -> Dict[str, bytes]:
 
 def read_cmd(sock: socket.socket) -> int:
     """
-    Docstring
+    This functions is wrapping function for socket's recv used to receive a cmd
+
+    :param sock: The socket to recv from
+    :return: An integer representing the command 
     """
     cmd = int(sock.recv(CMD_LEN))
 
     return cmd
 
 
-def request_parser(client: socket.socket) -> Request:
+def request_parser(sock: socket.socket) -> Request:
     """
-    Docstring
+    This function parses the data read into a request object
+
+    :raise ProtocolError: If the data wasn't send according to the protocol
+    :param sock: The socket to receieve the data from   
+    :return: A request object
     """
-    name = read_name(client)['nickname']
-    if not name:
-        raise socket.error
-        
     try:
-        cmd = Commands(read_cmd(client))
-        args = [reader(client) for reader,cmds in \
+        name = read_name(sock)['nickname']
+        cmd = Commands(read_cmd(sock))
+        args = [reader(sock) for reader,cmds in \
             reader_dict.items() if cmd in cmds]
         args = dict(ChainMap(*args))
 

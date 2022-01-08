@@ -6,7 +6,10 @@ from data_classes import Client, Screen
 
 def process_readable(client: Client, screen: Screen) -> None:
     """
-    Docstring
+    This function receives messages and add them to the screen message queue
+
+    :param client: The client receiving the message
+    :param screen: A screen object
     """
     try:
         sock = client.sock

@@ -7,23 +7,27 @@ from queue import Queue
 @dataclass
 class Screen:
     """
-    Docstring
+    An object used to take inputs and show messages
     """
     screen: str = ""
     prompt: str = ""
     messages_queue : Queue[str] = field(default_factory=Queue)
-    client_messages_queue: Queue[str] = field(default_factory=Queue)
+    client_requests: Queue[str] = field(default_factory=Queue)
 
     def clear_screen(self) -> None:
         """
-        Docstring
+        This function clears the screen
+
+        :return: None
         """
         os.system('cls')
 
 
     def prompt_to_screen(self) -> str:
         """
-        Docstring
+        This function takes input from the user
+
+        :return: The input taken as a string
         """
         self.clear_screen()
         print(self.screen)
@@ -35,7 +39,10 @@ class Screen:
 
     def print_to_screen(self, message) -> None:
         """
-        Docstring
+        This function wraps print to print to the screen object
+
+        :param message: A string containing the message
+        :return: None
         """
         self.clear_screen()
         self.screen += (message + '\n')
@@ -46,7 +53,7 @@ class Screen:
 @dataclass
 class Client:
     """
-    Docstring
+    An object used to store a socket and a nickname
     """
     sock: socket.socket
     name: str = ''

@@ -10,7 +10,13 @@ import handlers.command_processors as command_processors
 def dispatcher(request: Request, current_client: Client, \
      clients: Clients) -> None:
     """
-    Docstring
+    This function takes a request and sends it to its
+    corresponding functions and handles errors accordingly
+
+    :param request: A request object
+    :param current_client: The client making the request
+    :clients: Clients object
+    :return: None
     """
     message = ''
     try:

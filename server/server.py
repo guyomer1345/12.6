@@ -12,7 +12,11 @@ clients = Clients()
 
 def create_server(ip: str ,port: int)  -> socket.socket:
     """
-    Docstring
+    This function creates a socket and binds it to an address
+
+    :param ip: A string containing the ip to bind to
+    :param port: A string containing the port to bind to
+    :return: A socket object binded to the address
     """
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((ip, port))
@@ -22,10 +26,14 @@ def create_server(ip: str ,port: int)  -> socket.socket:
     return server
 
 
-def get_clients(clients: Clients,\
+def get_client_by_permission(clients: Clients,\
                 permissions: Permissions) -> List[socket.socket]:
     """
-    Docstring
+    This function returns a list of clients who have certain permissions
+
+    :param clients: Clients object
+    :param permissions: The specified permissions
+    :return: A list of clients
     """
     return[client.sock for client in \
         clients.clients if permissions in client.permissions]
@@ -36,9 +44,9 @@ def main():
     running = True
     try:
         while running:
-            send_clients = get_clients(clients, Permissions.BASIC)
-            read_clients = get_clients(clients, Permissions.WRITE)
-            write_clients = get_clients(clients, Permissions.READ) 
+            send_clients = get_client_by_permission(clients, Permissions.BASIC)
+            read_clients = get_client_by_permission(clients, Permissions.WRITE)
+            write_clients = get_client_by_permission(clients, Permissions.READ) 
             wlist = list(set(send_clients+read_clients+write_clients)) + [server]
             rlist = list(set(write_clients+read_clients))
             rlist, wlist, xlist = select.select(wlist, rlist, [])

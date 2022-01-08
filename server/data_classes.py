@@ -10,7 +10,7 @@ from consts.consts import Permissions, Commands, HOURS, MINUTES
 @dataclass
 class Request:
     """
-    Docstring
+    An object used to store requests
     """
     nickname: str
     cmd: Commands
@@ -19,6 +19,9 @@ class Request:
 
 @dataclass
 class Message:
+    """
+    An object used to store messages
+    """
     sender: str
     prefix: str
     data: bytes
@@ -26,7 +29,9 @@ class Message:
 
     def build(self) -> bytes:
         """
-        Docstring
+        This function takes the stored paramters and builds them to a message
+
+        :return: The message encoded to bytes
         """
         message = (self.date + ' ').encode() +\
                  (self.prefix+self.sender+': ').encode() + \
@@ -39,7 +44,7 @@ class Message:
 @dataclass
 class Client:
     """
-    Docstring
+    An object used to store the information about a client
     """
     sock: socket.socket
     _nickname: str = ''
@@ -57,14 +62,20 @@ class Client:
     
     def remove_permissions(self, permissions: List[Permissions]) -> None:
         """
-        Docstring
+        This functions removes permissions from the client
+
+        :param permissions: A list of permissions to remove
+        :return: None
         """
         [self.permissions.remove(permission) for permission in permissions]
 
 
     def add_permissions(self, permissions: List[Permissions]) -> None:
         """
-        Docstring
+        This functions adds permissions from the client
+
+        :param permissions: A list of permissions to add
+        :return: None
         """
         [self.permissions.append(permission) for permission in permissions]
 
@@ -72,14 +83,18 @@ class Client:
 @dataclass
 class Clients:
     """
-    Docstring
+    An object used to store a list of clients
     """
     clients: List[Client] = field(default_factory=list)
 
 
-    def get_by_nickname(self, nickname: str):
+    def get_by_nickname(self, nickname: str) -> socket.socket:
         """
-        Docstring
+        This functions finds the client with a given nickname
+
+        :raise SocketNotExist: If couldn't find any matching sockets
+        :param nickname: The nickname to filter by
+        :return: The socket of the client with the given nickname
         """
         try:
             sock = [client for client in \
@@ -93,7 +108,9 @@ class Clients:
     
     def view_managers(self) -> str:
         """
-        Docstring
+        This functions finds all the clients with the manager permission
+
+        :return: A list of clients with the manager permission
         """
         managers = [client.nickname for client in \
                  self.clients if Permissions.MANAGER in client.permissions]
@@ -104,7 +121,11 @@ class Clients:
 
     def get_by_sock(self, sock: socket.socket) -> Client:
         """
-        Docstring
+        This functins find the client associated with a given socket
+
+        :raise SocketNotExist: If couldn't find any matching clients
+        :sock: The socket to filter by
+        :return: The client matching the socket
         """
         try:
             client = [client for client in \
@@ -118,7 +139,11 @@ class Clients:
 
     def remove_client(self, sock: socket.socket) -> None:
         """
-        Docstring
+        This functions removes a socket from the clients object
+
+        :raise SocketNotExist: If no client was found
+        :param sock: The socket to remove  
+        :return: None
         """
         try:
             client_to_remove = [client for client in \
@@ -131,7 +156,11 @@ class Clients:
 
     def add_message_to_queue(self, clients: List[Client], message: Message) -> None:
         """
-        Docstring
+        This functions adds message to a client messages queue
+
+        :param clients: A list containing client objects
+        :message: The message object to add
+        :return: None
         """
         for client in clients:
             if Permissions.WRITE in client.permissions: 

@@ -7,7 +7,11 @@ from consts.consts import Permissions, Commands
 
 def get_prefix(client: Client, request: Request) -> str:
     """
-    Docstring
+    This function returns the matching prefix for the message
+
+    :param client: A client object
+    :param request: A request object
+    :return: The prefix
     """
     prefix = ''
     if Permissions.MANAGER in client.permissions:
@@ -22,7 +26,13 @@ def get_prefix(client: Client, request: Request) -> str:
 def end_connection(client: Client, clients: Clients,\
                          alert_clients: bool) -> None: 
     """
-    Add docstring
+    This functions ends the connection with a client
+    and notifys the other clients
+    
+    :param client: A client object
+    :param clients: Clients object
+    :param alert_clients: Whether to alert the other clients or noot
+    :return: None
     """
     sock = client.sock
     ip = sock.getsockname()[0]
@@ -41,7 +51,12 @@ def end_connection(client: Client, clients: Clients,\
 
 def accept_client(server: socket.socket, clients: Clients) -> None:
     """
-    Add docstring
+    This function is wrapping function for socket's accept
+    and adds the socket to the clients object
+
+    :param server: The server accepting the socket
+    :param clients: Clients object
+    :return None:
     """
     sock, addr = server.accept()
     sock.settimeout(5)

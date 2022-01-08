@@ -12,7 +12,9 @@ screen = Screen()
 
 def create_client_socket() -> socket.socket:
     """
-    Docstring
+    This function is wrapper function for creating a socket
+
+    :return: Socket object
     """
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
@@ -21,7 +23,12 @@ def create_client_socket() -> socket.socket:
 
 def connect_to_server(client_socket: socket.socket, ip: str, port: str) -> None:
     """
-    Docstring
+    This function is warrper for function for socket's connect
+
+    :param client_socket: The socket to connect
+    :param ip: A string containing the ip
+    :param port: A string containing the port
+    :return: None
     """
     try:
         client_socket.connect((ip, int(port)))
@@ -34,19 +41,25 @@ def connect_to_server(client_socket: socket.socket, ip: str, port: str) -> None:
 
 def input_function(screen: Screen) -> None:
     """
-    Docstring
+    This function takes inputs in a loop
+
+    :param screen: Screen ojbect
+    :return: None
     """
     while True:
         client_message = screen.prompt_to_screen()
         if client_message.startswith('/None'):
             client_message.replace('/None', '')
 
-        screen.client_messages_queue.put(client_message)
+        screen.client_requests.put(client_message)
 
 
 def printing_function(screen: Screen) -> None:
     """
-    Docstring
+    This function prints the messages received from the server
+
+    :param screen: Screen objecet
+    :return: None
     """
     screen.messages_queue.put(HELP)
     while True:

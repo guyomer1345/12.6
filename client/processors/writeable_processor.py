@@ -7,15 +7,19 @@ from parsers.message_parser import build_message
 
 def process_writeable(client: Client, screen: Screen) -> None:
     """
-    Docstring
+    This functions sends a message to the server
+
+    :param client: The client sending the message
+    :param screen: A screen object
+    :return None:
     """
-    messages_left = True
-    while messages_left:
+    requests_left = True
+    while requests_left:
         try:
-            client_message = screen.client_messages_queue.get(False)
+            requests_left = screen.client_requests.get(False)
 
             cmd = next((cmd for cmd in Commands \
-                if client_message.startswith(cmd.value.phrase)), None)
+                if requests_left.startswith(cmd.value.phrase)), None)
             
             if not cmd:
                 cmd = Commands.Message # Default value
@@ -29,11 +33,11 @@ def process_writeable(client: Client, screen: Screen) -> None:
                     +'before sending messages!')
                 continue
             
-            message = build_message(client, cmd, client_message).encode()
+            message = build_message(client, cmd, requests_left).encode()
             client.sock.send(message)
 
         except queue.Empty:
-            messages_left = False
+            requests_left = False
 
         except socket.error:
             pass
