@@ -2,7 +2,7 @@ from enum import Enum, EnumMeta
 
 HELP = \
 """
-Do note that before sending messages you have to set up a nickname.
+Do note that before sending messages you have to set up a nickname only once!.
 The following commands me be available to you:
 /help, /set-nickname, /mute, /promote, /kick, /private-message, /quit, /view-managers.
 If no command is specified a normal message will be sent\n

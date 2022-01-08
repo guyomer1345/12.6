@@ -2,7 +2,7 @@ import queue
 import socket
 from data_classes import Client, Screen
 from consts.consts import Commands, HELP
-from parsers.message_parser import build_message
+from parsers.message_parser import build_request
 
 
 def process_writeable(client: Client, screen: Screen) -> None:
@@ -33,8 +33,8 @@ def process_writeable(client: Client, screen: Screen) -> None:
                     +'before sending messages!')
                 continue
             
-            message = build_message(client, cmd, requests_left).encode()
-            client.sock.send(message)
+            request = build_request(client, cmd, requests_left).encode()
+            client.sock.send(request)
 
         except queue.Empty:
             requests_left = False

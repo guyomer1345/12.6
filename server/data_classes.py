@@ -163,5 +163,5 @@ class Clients:
         :return: None
         """
         for client in clients:
-            if Permissions.WRITE in client.permissions: 
+            if Permissions.READ in client.permissions: 
                 client.message_queue.put(message)

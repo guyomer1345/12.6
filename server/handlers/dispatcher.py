@@ -1,7 +1,7 @@
 import logging
 from consts.consts import Commands
 from data_classes import Client, Clients, Request, Message
-from errors.errors import BadNickname, BadPermissions,\
+from errors.errors import BadNickname, BadPermissions, SocketNotExist, \
                          CantKickYourself, CantMuteYourself, CantPromoteYourself
 from functions.functions import end_connection
 import handlers.command_processors as command_processors
@@ -38,6 +38,11 @@ def dispatcher(request: Request, current_client: Client, \
         message = Message('SERVER', '',\
             "You cant use that on yourself!".encode())
     
+    except SocketNotExist as e:
+        logging.info(e)
+        message = Message('SERVER', '',\
+            "The client you tried to use that on doesn't exist!".encode())
+
     finally:
         if message:
             clients.add_message_to_queue([current_client], message)

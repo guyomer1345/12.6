@@ -36,15 +36,15 @@ def process_message(current_client: Client, \
     :request Request: The request the client is trying to make
     :return: None
     """
-    if not Permissions.WRITE in current_client.permissions:
-        raise BadPermissions(f'Client {current_client.nickname} ' + \
-            'tried to write with bad permissions')
-    
     data = request.args['data']
     if data == b'/quit':
         end_connection(current_client, clients, True)
         return None
 
+    if not Permissions.WRITE in current_client.permissions:
+        raise BadPermissions(f'Client {current_client.nickname} ' + \
+            'tried to write with bad permissions')
+    
     clients_to_send = clients.clients
     prefix = get_prefix(current_client, request)
     message = Message(request.nickname, prefix, data)
