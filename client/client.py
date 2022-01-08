@@ -6,7 +6,7 @@ import queue
 import threading
 from data_classes import Screen, Client
 from consts.consts import HELP
-from processors import readable_proccessor, writeable_processor
+import processors
 
 screen = Screen()
 
@@ -93,10 +93,10 @@ def main():
             rlist, wlist, xlist = select.select([client.sock], \
                                                 [client.sock], [])
             if client.sock in rlist:
-                readable_proccessor.process_readable(client, screen)
+                processors.process_readable(client, screen)
             
             if client.sock in wlist:
-                writeable_processor.process_writeable(client, screen)
+                processors.process_writeable(client, screen)
 
     except KeyboardInterrupt:
         logging.info('Shutting down')
