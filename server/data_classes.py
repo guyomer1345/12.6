@@ -59,7 +59,6 @@ class Client:
     def nickname(self, nickname: str) -> None:
         self._nickname = nickname
     
-    
     def remove_permissions(self, permissions: List[Permissions]) -> None:
         """
         This functions removes permissions from the client
@@ -68,7 +67,6 @@ class Client:
         :return: None
         """
         [self.permissions.remove(permission) for permission in permissions]
-
 
     def add_permissions(self, permissions: List[Permissions]) -> None:
         """
@@ -86,7 +84,6 @@ class Clients:
     An object used to store a list of clients
     """
     clients: List[Client] = field(default_factory=list)
-
 
     def get_by_nickname(self, nickname: str) -> socket.socket:
         """
@@ -118,7 +115,6 @@ class Clients:
 
         return managers
 
-
     def get_by_sock(self, sock: socket.socket) -> Client:
         """
         This functins find the client associated with a given socket
@@ -135,7 +131,6 @@ class Clients:
         
         except IndexError:
             raise SocketNotExist("Socket doesn't exist")
-        
 
     def remove_client(self, sock: socket.socket) -> None:
         """
@@ -152,7 +147,6 @@ class Clients:
         
         except:
             raise SocketNotExist("Socket doesn't exist")
-
 
     def add_message_to_queue(self, clients: List[Client], message: Message) -> None:
         """

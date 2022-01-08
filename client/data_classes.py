@@ -1,7 +1,7 @@
 import os
 import socket
-from dataclasses import dataclass, field
 from queue import Queue
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -22,7 +22,6 @@ class Screen:
         """
         os.system('cls')
 
-
     def prompt_to_screen(self) -> str:
         """
         This function takes input from the user
@@ -36,7 +35,6 @@ class Screen:
 
         return message
     
-
     def print_to_screen(self, message) -> None:
         """
         This function wraps print to print to the screen object
